@@ -1,15 +1,15 @@
-# Project: 4. 使用链栈检验括号匹配
+# Project: 学生管理系统
 # Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = 4.使用链栈检验括号匹配.o
-LINKOBJ  = 4.使用链栈检验括号匹配.o
+OBJ      = 学生管理系统.o
+LINKOBJ  = 学生管理系统.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = "4. 使用链栈检验括号匹配.exe"
+BIN      = 学生管理系统.exe
 CXXFLAGS = $(CXXINCS) 
 CFLAGS   = $(INCS) 
 RM       = rm.exe -f
@@ -24,5 +24,5 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-4.使用链栈检验括号匹配.o: 4.使用链栈检验括号匹配.c
-	$(CC) -c 4.使用链栈检验括号匹配.c -o 4.使用链栈检验括号匹配.o $(CFLAGS)
+学生管理系统.o: 学生管理系统.c
+	$(CC) -c 学生管理系统.c -o 学生管理系统.o $(CFLAGS)
