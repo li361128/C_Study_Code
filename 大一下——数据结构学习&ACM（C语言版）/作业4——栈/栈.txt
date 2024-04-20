@@ -1,0 +1,1804 @@
+第一题
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+#include <stdlib.h>
+
+#define OK 1
+#define ERROR 0
+
+/* run this program using the console pauser or add your own getch, system("pause") or input loop */
+
+struct Stack
+{
+	int top;
+	unsigned capacity;
+	char * array;
+};
+
+struct Stack* createStack(unsigned capacity)
+{
+	struct Stack *stack = (struct Stack *)malloc(sizeof(struct Stack));
+	stack->capacity = capacity;
+	stack->top = -1;
+	stack->array = (char*)malloc(stack->capacity*sizeof(char));
+	return stack;
+}
+
+int isFull(struct Stack stack)
+{
+	int full = 0;
+	full = (stack.top == (int)stack.capacity - 1)?1:0;
+	return full;
+}
+
+int isEmpty(struct Stack stack)
+{
+	return stack.top == -1;
+}
+
+void push(struct Stack *stack,char item)
+{
+	if(stack->top == stack->capacity)	return;	
+	stack->array[++stack->top] = item;	
+}
+
+char pop(struct Stack *stack)
+{
+	if(!isEmpty(*stack))	return stack->array[stack->top--];
+}
+
+void reverseStr(char *str)
+{
+	int i = 0;
+	struct Stack* stack  = createStack(strlen(str) + 1);
+	for(;str[i] != '\0';i ++)
+	{
+		push(stack,str[i]);
+	}
+	for(i = 0;str[i] != '\0';i ++)
+	{
+		str[i] = pop(stack);
+	}
+    printf("%s\n", str);
+}
+
+int main()
+{
+	char str[] = "ILoveChina, ILoveBJTU, ILoveGJCXSJXL";
+
+    reverseStr(str);
+
+	return 0;
+}
+
+第二题
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+
+#define ERROR 0
+#define OK 1
+#define TRUE 1
+#define FALSE 0
+
+typedef int SElemType;
+typedef int Status;
+
+#define STACK_INIT_SIZE   100     //Initial size for memory allocation
+#define STACKINCREMENT  10        //Incremental size
+
+typedef struct{
+   SElemType *base;    //Base pointer
+   SElemType *top;     //Top pointer
+   int stacksize;       //Current size
+} SqStack;
+
+Status InitStack(SqStack *S)
+{
+	S->base = (SElemType *)malloc(sizeof(SElemType));
+	if(!S->base) return ERROR;
+	S->top = S->base;
+	S->stacksize = STACK_INIT_SIZE ;
+	return OK;
+}
+
+Status StackEmpty(SqStack S)
+{
+	return (S.top == S.base)?TRUE :FALSE;
+}
+
+int StackLength(SqStack S)
+{
+	return (S.top - S.base);
+}
+
+Status GetTop(SqStack S, SElemType *e)
+{
+	if(StackEmpty(S))	return ERROR;
+	*e = *--S.top;
+	return OK;
+}
+
+Status Pop(SqStack *S, SElemType *e)
+{
+	if(StackEmpty(*S))	return ERROR;
+	*e = *(--S->top);
+}
+
+Status Push(SqStack *S, SElemType e)
+{
+	if(S->top - S->base == S->stacksize)	return ERROR;
+	*S->top++ = e;
+	return OK;
+}
+
+void PrintStack(SqStack S)
+{
+	int i = 0,e;
+	int len = StackLength(S);
+	for(;i < len;i ++)
+	{
+		Pop(&S,&e); 
+		printf("%d ",e);
+	}
+	printf("\n");
+}
+
+int reverseOutput(SqStack S)
+{
+	if(StackEmpty(S))	return ERROR;
+	PrintStack(S);
+	return StackLength(S);
+}
+
+int main()
+{
+	SqStack S;
+	InitStack(&S);
+	int n,i = 0;
+	scanf("%d",&n);
+	int arr[n];
+	for(;i < n;i ++)	
+	{
+		scanf("%d",&arr[i]); 
+		Push(&S,arr[i]);
+	}
+	printf("%d",reverseOutput(S));
+	return OK;
+}
+
+第三题
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+
+#define ERROR 0
+#define OK 1
+#define TRUE 1
+#define FALSE 0
+
+typedef char ElemType;
+typedef int Status;
+
+#define STACK_INIT_SIZE   100          // Initial size for memory allocation
+#define STACKINCREMENT  10              // Incremental size
+
+typedef struct {
+    ElemType  *base;    // Base pointer
+    ElemType  *top;     // Top pointer
+    int        stacksize;     // Current size
+} SqStack;
+
+//========================================== 
+// Initialization of array-based stack
+//===========================================
+Status InitStack(SqStack *S)
+{
+	S->base = (ElemType*)malloc(sizeof(SqStack));
+	if(!S->base)	return ERROR;
+	S->top = S->base;
+	S->stacksize = STACK_INIT_SIZE;
+	return OK; 
+}
+
+//========================================
+// Test empty stack
+//========================================
+Status StackEmpty (SqStack S)
+{
+	return (S.base == S.top)?1:0;
+}
+
+//===============================================
+// Get the length of a stack
+//==============================================
+int StackLength (SqStack S)
+{
+	return (S.top - S.base); 
+}
+
+//=====================================
+// Get top item of a stack
+//====================================
+Status GetTop(SqStack S, ElemType *e)
+{
+	if(StackEmpty(S))	return ERROR;
+	*e = *S.top;
+	return OK;
+}
+
+//===================================================
+// Delete an item from the stack
+//====================================================
+Status Pop(SqStack *S, ElemType *e)
+{
+	if(StackEmpty(*S))	return ERROR;
+	*e = *--S->top;
+	return OK;
+}
+
+//======================================
+// Insert an item into the stack
+//=======================================
+Status Push(SqStack *S, ElemType e)
+{
+	if(S->top - S->base >= S->stacksize)
+	{
+		S->base = (ElemType*)realloc(S->base,(S->stacksize + STACKINCREMENT)*sizeof(ElemType));
+		if(!S->base)	return ERROR;
+		S->top = S->base + S->stacksize;
+		S->stacksize +=  STACKINCREMENT;
+	}
+	*S->top++= e;
+	return OK;
+}
+
+//======================================
+// Print the elements in a stack
+//=======================================
+void PrintStack (SqStack S)
+{
+	int len = StackLength(S);
+	int i = 0;
+	for(;i < len;i ++)
+	{
+		ElemType e;
+		Pop(&S,&e);
+		printf("%d ",e);
+	}
+	printf("\n");
+}
+
+//======================================
+// Compare two strings S and T containing backspaces
+//=======================================
+int CompareString(char *S,  char *T)
+{
+	SqStack stack_S,stack_T;
+	InitStack(&stack_S);
+	InitStack(&stack_T);
+	int i;
+	ElemType e;
+	for(i = 0;S[i] != '\0';i ++)
+	{
+		if(S[i] !='#')	Push(&stack_S,S[i]);
+		else
+		{
+			if(StackEmpty(stack_S)) continue;
+			else Pop(&stack_S,&e);
+		}
+	}
+	for(i = 0;T[i] != '\0';i ++)
+	{
+		if(T[i] !='#')	Push(&stack_T,T[i]);
+		else
+		{
+			if(StackEmpty(stack_T)) continue;
+			else Pop(&stack_T,&e);
+		}
+	}
+	if(StackLength(stack_S) != StackLength(stack_T))	return FALSE;
+	else
+	{
+		for(i = 0;i < StackLength(stack_S);i ++)
+		{
+			ElemType s_data,t_data;
+			Pop(&stack_S,&s_data);
+			Pop(&stack_T,&t_data);
+			if(s_data != t_data)	return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+int main()
+{
+	char s[1000],t[1000];
+	scanf("%s",&s);
+	scanf("%s",&t);
+	int res = CompareString(s,t);
+	if(res)	printf("true");
+	else printf("false");
+	return 0;
+}
+
+第四题
+
+#define BASE 17
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define Status int
+#define SElemType char
+
+#define STACK_INIT_SIZE 100        //存储空间的初始分配量
+#define STACKINCREMENT  10          //存储空间的分配增量
+#define OK 1
+#define ERROR 0
+#define TRUE 1
+#define FALSE 0
+
+//栈数据结构
+typedef struct Stack 
+{
+    SElemType *base;    //栈底指针
+    SElemType *top;     //栈顶指针
+    int stacksize;      //栈可用的最大容量
+} SqStack;
+
+//初始化函数
+Status InitStack(SqStack *S) 
+{
+    S->base = (SElemType *)malloc(STACK_INIT_SIZE * sizeof(SElemType));
+    if (!S->base) 
+    {
+        printf("init fail\n");
+        return ERROR;
+    }
+    S->top = S->base;     //栈顶指针与栈底相同
+    S->stacksize = STACK_INIT_SIZE;
+    return OK;
+}
+
+//销毁 
+Status DestroyStack(SqStack *S) 
+{
+    //补全代码
+	free(S->base);
+	S->base = NULL;
+	S->top = NULL;  
+	S->stacksize = 0;
+	if(S->base)	
+	{
+		printf("Fail Destroy");
+		return ERROR;
+	}
+	return OK;
+}
+
+//清空 
+Status ClearStack(SqStack *S) 
+{
+    S->top = S->base;
+    return OK;
+}
+
+//判断是否为空 
+Status StackEmpty(SqStack S) 
+{
+    if (S.top == S.base) 
+        return TRUE;
+    else
+        return FALSE;
+}
+
+int StackLength(SqStack S) 
+{
+    return S.top - S.base;
+}
+
+//得到栈顶元素，不修改指针
+Status GetTop(SqStack S, SElemType *e) 
+{ 
+    if (S.top == S.base) 
+        return ERROR;
+    *e = *(S.top - 1);
+    return OK;
+}
+
+//入栈
+Status Push(SqStack *S, SElemType e) 
+{
+    if (S->top - S->base >= S->stacksize) 
+    {  //栈满,追加存储空间
+        S->base = (SElemType *)realloc(S->base, (S->stacksize + STACKINCREMENT) * sizeof(SElemType));
+        if (!S->base) 
+            return ERROR;
+        S->top = S->base + S->stacksize;
+        S->stacksize += STACKINCREMENT;
+    }
+    *S->top++ = e;
+    return OK;
+}
+
+//出栈
+Status Pop(SqStack *S, SElemType *e) 
+{
+    if (S->top == S->base) 
+        return ERROR;    //栈空
+    *e = *--S->top;
+    return OK;
+}
+
+//遍历栈
+Status StackTraverse(SqStack S) 
+{
+    if (S.base == NULL)
+        return ERROR;
+    if (S.top == S.base)
+        printf("empty\n");
+    SElemType *p;
+    p = S.top;
+    while (p > S.base) 
+    {
+        p--;
+        printf("%c", *p);//从栈顶开始打印，而且未修改栈顶指针 
+    }
+    return OK;
+}
+
+void conversion(SqStack *S) 
+{
+    //补全代码
+    int decimal = 0;
+    scanf("%d",&decimal);
+    char base17[20] = "0123456789ABCDEFG";
+    while(decimal)
+    {
+    	int index = decimal % 17;
+    	Push(S,base17[index]);
+    	decimal /=17;
+	}
+	StackTraverse(*S);
+}
+
+//主函数
+int main() 
+{
+    SqStack S;
+    InitStack(&S);
+    conversion(&S);
+    DestroyStack(&S);
+    return 0;
+}
+
+第五题
+#include <stdio.h>
+
+#include <string.h>
+
+#include <stdlib.h>
+
+
+#define STACK_INIT_SIZE    20     /*存储空间的初始分配量*/
+
+#define STACK_INCREMENT    10     /*存储空间的分配增量*/
+
+//#define CHAR_MAX 127
+
+#define DBL_MAX 100
+
+#define ERROR 0
+
+#define OK 1
+
+
+/*数据栈结构体定义，要求：
+
+包括栈底指针，栈顶指针和当前分配的存储容量*/
+
+typedef struct
+{
+
+    double *Dbase;
+
+    double *Dtop;
+
+    int Dstacksize;
+
+} DataStack;
+
+
+/*操作符结构体定义，要求包括栈底指针，栈顶指针和当前分配的存储容量*/
+
+typedef struct
+{
+
+    char *Obase;
+
+    char *Otop;
+
+    int Ostacksize;
+
+} OpStack;
+
+
+/*静态二维优先级数组：static char OperationPreceder[7][7]   
+
+定义操作符＋、－、＊、／、（、）、=的运算优先级*/
+
+static char OperationPreceder[7][7] =
+
+        {{'>', '>', '<', '<', '<', '>', '>'},
+
+         {'>', '>', '<', '<', '<', '>', '>'},
+
+         {'>', '>', '>', '>', '<', '>', '>'},
+
+         {'>', '>', '>', '>', '<', '>', '>'},
+
+         {'<', '<', '<', '<', '<', '=', 'x'},
+
+         {'>', '>', '>', '>', 'x', '>', '>'},
+
+         {'<', '<', '<', '<', '<', 'x', '='}
+
+        };
+
+
+/*函数接口定义为：int TransOPtoCD(char op_temp)   
+
+* 输入参数：操作符x   
+
+* 处理规则及返回值：将操作符转化为运算优先级静态表的坐标，并返回；   
+
+* 输入参数非＋、－、＊、／、（、）、=，则返回－1*/
+
+int TransOPtoCD(char op_temp)
+{
+
+    switch (op_temp)
+    {
+
+        case '+':
+            return (0);
+
+        case '-':
+            return (1);
+
+        case '*':
+            return (2);
+
+        case '/':
+            return (3);
+
+        case '(':
+            return (4);
+
+        case ')':
+            return (5);
+
+        case '=':
+            return (6);
+
+        default:
+            return (-1);  /*当输入参数不是四则运算、括号、等号时，返回－1*/
+
+    }
+
+
+}
+
+
+/*函数接口定义为：char Precede(char op1, char op2)   
+
+* 输入参数：进行比较的运算符op1和op2；   
+
+* 处理规则及返回值：将op1和op2转化为二维数组OperationPreceder的坐标，查找该坐标存储的符号，并作为返回值输出；   
+
+* 如果无法找到坐标则返回0*/
+
+char Precede(char op1, char op2)
+{
+
+    int x, y;
+
+    x = y = -1;
+
+    x = TransOPtoCD(op1);
+
+    y = TransOPtoCD(op2);
+
+    if (x != -1 && y != -1)
+    {
+
+        //    printf("%c\n", OperationPreceder[x][y]);       
+
+        return OperationPreceder[x][y];
+
+    } else
+
+        return 0;
+
+}
+
+
+/*函数接口定义为：int checkch (char c)   
+
+* 输入参数：表达式字符c；   
+
+* 处理规则及返回值：判断字符c是数字还是操作符；   
+
+* 如果c是数字返回1，如果是小数点返回2，如果是运算符返回3，否则为无效字符返回－1；   
+
+* 假设：表达式中的所有云算数均为正数*/
+
+int checkch(char c)
+{
+
+    if (c >= '0' && c <= '9')
+
+        return 1;
+
+    if (c == '.')
+
+        return 2;
+
+    if (c == '+' || c == '-' || c == '*' || c == '/' || c == '(' || c == ')' || c == '=')
+
+        return 3;
+
+    else
+
+        return 0;
+
+}
+
+
+/*函数接口定义为：double Operate(double x,double y, char op)；   
+
+* 输入参数：运算数x，被运算数y，操作符op；   
+
+* 处理规则及返回值：进行x op y运算，返回运算结果；默认返回0.0*/
+
+double Operate(double x, double y, char op)
+{
+
+    switch (op)
+    {
+
+        case '+':
+
+            return x + y;
+
+        case '-':
+
+            return x - y;
+
+        case '*':
+
+            return x * y;
+
+        case '/':
+
+            if (y != 0)
+
+                return x / y;
+
+            else
+
+                printf("The divisor cannot be 0!\n");
+
+            exit(-1);
+
+        default:
+
+            break;
+
+    }
+
+    return 0.0;
+
+}
+
+
+/*数据栈初始化函数定义，要求：   
+
+* 函数接口定义为：int InitDataStack(DataStack *DS)   
+
+* 输入参数：数据栈DS   
+
+* 处理规则及返回值：从内存堆中申请STACK_INIT_SIZE个整型空间，将栈顶指针与栈底指针都指向初始地址，给Dstacksize赋值STACK_INIT_SIZE   
+
+* 初始化成功返回1，否则返回0.*/
+
+int InitDataStack(DataStack *DS)
+{
+
+
+    //根据注释, 将该函数补充完整
+    DS->Dbase = (double*)malloc(sizeof(double));
+    if(!DS->Dbase)	return ERROR;
+    DS->Dtop = DS->Dbase;
+	DS->Dstacksize =  STACK_INIT_SIZE;
+	return OK;
+	
+	
+}
+
+
+/* 数据栈入栈函数定义，要求：   
+
+* 函数接口定义为：int PushDataStack(DataStack *DS,int e)   
+
+* 输入参数：待操作数据栈DS，插入数据e；   
+
+* 处理规则及返回值：在栈顶指针位置存储e，并将栈顶指针位置后移，返回1；   
+
+如果数据栈不存在或者数据栈上溢，返回错误（0）。*/
+
+int PushDataStack(DataStack *DS, double e)
+{
+	if(!DS->Dbase)	return ERROR;//数据栈不存在
+	if(DS->Dtop - DS->Dbase >= DS->Dstacksize)
+	{//据栈上溢,重新分配内存 
+		DS->Dbase = (double*)realloc(DS->Dbase,(DS->Dstacksize +STACK_INCREMENT ) * sizeof(double));
+		if(!DS->Dbase)	return ERROR;
+		DS->Dtop = DS->Dbase + DS->Dstacksize;
+		DS->Dstacksize += STACK_INCREMENT;
+	}
+	*(DS->Dtop++) = e;
+	return OK;
+   // 根据注释, 将该函数补充完整
+
+
+}
+
+
+/*数据栈出栈函数定义，要求：   
+
+* 函数接口定义为：int PopDataStack(DataStack *DS, int *e)   
+
+* 输入参数：数据栈DS, 输出整型指针变量e；   
+
+* 处理规则及返回值：将栈顶指针减1，将该地址存储的变量付给＊e，返回1；   
+
+如果数据栈不存在或数据栈为空，返回0。*/
+
+int PopDataStack(DataStack *DS, double *e)
+{
+
+    //根据注释, 将该函数补充完整
+    if(!DS->Dbase)	return ERROR;
+    *e = *--DS->Dtop;
+	return OK; 
+
+}
+
+
+/*数据栈查看栈顶元素函数定义，要求：   
+
+* 函数接口定义为：int GetDataTop(DataStack *DS)   
+
+* 输入参数：数据栈DS, 记录栈顶元素变量e；   
+
+* 处理规则及返回值：如果数据栈不存在或数据栈为空，返回DBL_MAX; 否则，返回栈顶元素。*/
+
+double GetDataTop(DataStack *DS)
+{
+
+
+    //根据注释, 将该函数补充完整
+	if(!DS->Dbase)	return DBL_MAX;
+	return *(DS->Dtop - 1);
+	
+}
+
+
+/*数据栈销毁函数定义，要求：   
+
+* 函数接口定义为：int DestroyDataStack(DataStack *DS   
+
+* 输入参数：数据栈DS   
+
+* 处理规则及返回值：释放栈底指针所指空间，并将数据栈的栈底和栈顶指针置空，数据栈Dstacksize置为0。最后返回1*/
+
+int DestroyDataStack(DataStack *DS)
+{
+
+    //根据注释, 将该函数补充完整
+    free(DS->Dbase);
+	DS->Dbase = NULL;
+	DS->Dtop = NULL;
+	DS->Dstacksize = 0;
+	if(DS->Dbase)	return ERROR;
+	return OK;
+
+}
+
+
+/*符号栈初始化函数定义，要求：   
+
+* 函数接口定义为：int InitOpStack(OpStack *OS)   
+
+* 输入参数：符号栈OS   
+
+* 处理规则及返回值：从内存堆中申请STACK_INIT_SIZE个整型空间，将栈顶指针与栈底指针都指向初始地址，给Dstacksize赋值STACK_INIT_SIZE   
+
+* 初始化成功返回1，否则返回0.*/
+
+int InitOpStack(OpStack *OS)
+{
+
+    //根据注释, 将该函数补充完整
+    OS->Obase = (char*)malloc(sizeof(char));
+    if(!OS->Obase)	return ERROR;
+    OS->Otop = OS->Obase;
+    OS->Ostacksize = STACK_INIT_SIZE;
+    return OK;
+
+}
+
+
+/* 符号栈入栈函数定义，要求：   
+
+* 函数接口定义为：int PushOpStack(OpStack *OS,int e)   
+
+* 输入参数：待操作符号栈DS，插入符号e；   
+
+* 处理规则及返回值：在栈顶指针位置存储e，并将栈顶指针位置后移，返回1；   
+
+如果符号栈不存在或者符号栈上溢，返回0。*/
+
+int PushOpStack(OpStack *OS, char e)
+{
+
+
+//    根据注释, 将该函数补充完整
+	if(!OS->Obase)	return OK;
+	if(OS->Otop - OS->Obase >= OS->Ostacksize)	
+	{
+		OS->Obase = (char*)realloc(OS->Obase,(OS->Ostacksize + STACK_INCREMENT)*sizeof(char));
+		
+	}
+	*OS->Otop++ = e;
+}
+
+
+/* 符号栈出栈函数定义，要求：   
+
+* 函数接口定义为：int PopOpStack(OpStack *OS, int *e)   
+
+* 输入参数：符号栈DS, 输出符号指针变量e；   
+
+* 处理规则及返回值：将栈顶指针减1，将该地址存储的变量付给＊e，返回1；   
+
+如果符号栈不存在或符号栈为空，返回0。*/
+
+int PopOpStack(OpStack *OS, char *e)
+{
+
+    //根据注释, 将该函数补充完整
+    if(!OS->Obase)	return ERROR;
+    *e = *--OS->Otop;
+    return OK;
+
+}
+
+
+/* 符号栈查看栈顶元素函数定义，要求：   
+
+* 函数接口定义为：char GetOpTop(OpStack *OS)   
+
+* 输入参数：数据栈DS, 记录栈顶元素变量e；   
+
+* 处理规则及返回值：如果数据栈不存在或数据栈为空，返回CHAR_MAX; 否则，返回栈顶元素。*/
+
+char GetOpTop(OpStack *OS)
+{
+
+
+    //根据注释, 将该函数补充完整
+	if(!OS->Obase)	return ERROR;
+	return *(OS->Otop - 1);
+
+}
+
+
+/* 符号栈销毁函数定义，要求：   
+
+* 函数接口定义为：int DestroyOpStack(OpStack *OS)   
+
+* 输入参数：符号栈DS   
+
+* 处理规则及返回值：释放栈底指针所指空间，并将符号栈的栈底和栈顶指针置空，符号栈Dstacksize置为0。最后返回1*/
+
+int DestroyOpStack(OpStack *OS)
+{
+
+    //根据注释, 将该函数补充完整
+	free(OS->Obase);
+	OS->Obase = NULL;
+	OS->Otop = NULL;
+	OS->Ostacksize = 0;
+	if(OS->Obase)	return ERROR;
+	return OK; 
+
+}
+
+
+int main()
+{
+
+    OpStack OPTR = {0};      /*运算符栈*/
+
+    DataStack OPND = {0};    /*操作数栈*/
+
+    char op = 0;             /*当前运算符*/
+
+    double value = 0.0;        /*数字字符的组合结果*/
+
+    double b = 0.0;         /*当前运算的操作数*/
+
+    double a = 0.0;         /*当前运算的被操作数*/
+
+    char expression[1001] = {0};          /*表达式缓存，表达式长度不大于1000个字符*/
+
+    int i = 0;                            /*表达式缓存的当前读取位置*/
+
+
+
+    /*数据栈初始化函数定义，要求：   
+
+    * 函数接口定义为：int InitDataStack(DataStack *DS)   
+
+    * 输入参数：数据栈DS   
+
+    * 处理规则及返回值：从内存堆中申请STACK_INIT_SIZE个整型空间，将栈顶指针与栈底指针都指向初始地址，给Dstacksize赋值STACK_INIT_SIZE   
+
+    * 初始化成功返回1，否则返回0.*/
+
+    if (InitDataStack(&OPND) == 0)
+    {
+
+        printf("InitDataStack Wrong\n");
+
+        return 1;
+
+    }
+
+
+
+    /*符号栈初始化函数定义，要求：   
+
+    * 函数接口定义为：int InitOpStack(OpStack *OS)   
+
+    * 输入参数：符号栈OS   
+
+    * 处理规则及返回值：从内存堆中申请STACK_INIT_SIZE个整型空间，将栈顶指针与栈底指针都指向初始地址，给Dstacksize赋值STACK_INIT_SIZE   
+
+    * 初始化成功返回1，否则返回0.*/
+
+    if (InitOpStack(&OPTR) == 0)
+    {
+
+        printf("InitOpStack Wrong\n");
+
+        return 1;
+
+    }
+
+
+
+    /*符号栈栈底压入'＝'*/
+
+    PushOpStack(&OPTR, '=');
+
+    /*提示输入表达式，以等号结束*/
+
+    printf("Please input the expression:\n");
+
+    /*从标准输入获得表达式存入数组expression*/
+
+    gets(expression);
+
+    /*防护代码：当用户遗漏＝时提示*/
+
+    if (expression[strlen(expression) - 1] != '=')
+    {
+
+        printf("Error: Please make sure the expression is ended with '='!");
+
+        return 0;
+
+    }
+
+
+    while (i < strlen(expression) - 1 || GetOpTop(&OPTR) != '=')
+    {
+
+        //防护无效输入       
+
+        if (checkch(expression[i]) == 0)
+        {
+
+            printf("Error: Invalid Input!");
+
+            return 0;
+
+        }
+
+        //当表达式当前字符是数字时，逐位读入并组合       
+
+        if (checkch(expression[i]) == 1)
+        {
+
+            while (checkch(expression[i]) == 1)
+            {
+
+                value = 10 * value + expression[i] - '0';
+
+                i++;
+
+            }
+
+            /*如果表达式当前字符是小数，小数点后的数字处理后与小数点之前的数字相加*/
+
+            if (checkch(expression[i]) == 2)
+            {
+
+                int r = 10;
+
+                i++;
+
+                while (checkch(expression[i]) == 1)
+                {
+
+                    value += (double) (expression[i] - '0') / r;
+
+                    r = 10 * r;
+
+                    i++;
+
+                }
+
+            }
+
+            //数字压入数字栈OPND        
+
+            PushDataStack(&OPND, value);
+
+            value = 0.0;
+
+        }
+
+
+
+        /*如果表达式当前字符是运算符，则需要判断当前运算符与符号栈栈顶运算符的优先级*/
+
+        if (checkch(expression[i]) == 3)
+        {
+
+
+            switch (Precede(GetOpTop(&OPTR), expression[i]))
+            {
+
+                /*如果符号栈栈顶运算符的优先级 < 表达式当前字符，则将表达式当前字符压入符号栈*/
+
+                case '<':
+
+                    PushOpStack(&OPTR, expression[i]);
+
+                    i++;
+
+                    break;
+
+                    /*如果符号栈栈顶运算符的优先级 = 表达式当前字符，删去该栈顶符号*/
+
+                case '=':
+
+                    PopOpStack(&OPTR, &op);
+
+                    i++;
+
+                    break;
+
+                    /*如果符号栈栈顶运算符的优先级 > 表达式当前字符，则计算栈顶运算符子式*/
+
+                case '>':
+
+                    PopOpStack(&OPTR, &op);
+
+                    PopDataStack(&OPND, &b);
+
+                    PopDataStack(&OPND, &a);
+
+                    PushDataStack(&OPND, Operate(a, b, op));  /*运算结果入数据栈*/
+
+                    break;
+
+                default:
+
+                    break;
+
+            }
+
+        }
+
+    }
+
+    /*打印表达式计算结果*/
+
+    printf("The result is:%.2f\n", GetDataTop(&OPND));
+
+    /*主动释放数据栈和符号栈的空间*/
+
+    DestroyDataStack(&OPND);
+
+    DestroyOpStack(&OPTR);
+
+    return 0;
+
+} 
+
+第六题
+
+#include<stdio.h>
+#include<stdlib.h>
+
+#define OK 1
+#define ERROR 0
+
+typedef int SElemType;
+
+typedef struct StackNode 
+{
+    SElemType data;
+    struct StackNode *next;
+} StackNode, *LinkStack;
+
+void InitStack(LinkStack *S) 
+{
+    // 补充完整
+    *S = (LinkStack)malloc(sizeof(StackNode)) ;
+    if(!(*S))	return ;
+    (*S)->next = NULL; 
+}
+
+int StackEmpty(LinkStack S) 
+{
+    if (S ->next == NULL) 
+    {
+        return 1;
+    } 
+    else 
+    {
+        return 0;
+    }
+}
+
+void Push(LinkStack *S, SElemType e) 
+{
+	LinkStack p = *S;	
+	LinkStack r;
+	r = (LinkStack)malloc(sizeof(StackNode));
+	if(!r)	return ;
+	r->data = e;
+	r->next = p->next;
+	p->next = r;
+}
+
+int Pop(LinkStack *S, SElemType *e) 
+{
+    // 补充完整
+    if(StackEmpty(*S)) return ERROR;
+    LinkStack p = *S;
+    LinkStack q = p->next;
+    *e = q->data;
+    p->next = q->next;
+    free(q); 
+
+	return OK; 
+}
+
+void Conversion() 
+{
+    LinkStack S;
+    InitStack(&S);
+    printf("请输入非负十进制数\n");
+    int N;
+    N = 1348;
+    while (N != 0) 
+    {
+        int mod = N % 8;
+        Push(&S, mod);
+        N = N / 8;
+    }
+    printf("八进制形式为: ");
+    int e;
+    while (StackEmpty(S) != 1) 
+    {
+        if(Pop(&S, &e) == OK)
+        printf("%d", e);
+    }
+    printf("\n");
+}
+
+int main() 
+{
+    Conversion();
+    return 1;
+}
+
+第六题
+
+#include <stdio.h>  
+
+#include <stdlib.h>  
+
+#include <malloc.h>
+
+ 
+
+#define ERROR 0
+
+#define OK 1
+
+#define TRUE 1
+
+#define FALSE 0
+
+ 
+
+typedef int SElemType;  
+
+typedef int Status;
+
+ 
+
+typedef struct L_node{
+
+     SElemType     data;  //data field
+
+     struct L_node  *next;   //pointer field
+
+}LNode, *LinkList;
+
+ 
+
+typedef struct{
+
+   LinkList  Head;  //head pointer
+
+   int  length;  //length
+
+}LinkStack;
+
+ 
+
+//========================================== 
+
+// initialization of linked list based stack
+
+//=========================================== 
+
+Status InitStack(LinkStack *S)
+{
+	
+	S->Head = (LinkList)malloc(sizeof(LNode));
+	if(!(S->Head))	return ERROR; 
+	S->Head->next = NULL;
+	S->length = 0;
+	return OK;
+}
+
+ 
+
+//========================================
+
+//Test empty stack
+
+//========================================
+
+Status StackEmpty (LinkStack S)
+{
+
+	return (S.length == 0)?TRUE:FALSE;
+
+}
+
+ 
+
+//===============================================
+
+// Get the length of a stack
+
+//==============================================
+
+int StackLength (LinkStack S)
+{
+ 	               
+
+}
+
+ 
+
+//=====================================
+
+// Get top item of a stack
+
+//====================================
+
+int GetTop(LinkStack S)
+{
+	if(S.length == 0) return ERROR;
+	return S.Head->next->data;
+
+}
+
+ 
+
+//===================================================
+
+// Delete an item from the stack
+
+//====================================================
+
+Status Pop(LinkStack *S, SElemType *e)
+{
+	if(S->length == 0)	return ERROR;
+	LinkList p = S->Head->next;
+	LinkList r = S->Head;
+	*e = p->data;
+	r->next = p->next;
+	S->length --;
+	free(p);
+	return OK;
+}
+
+ 
+
+//======================================
+
+// Insert an item into the stack
+
+//=======================================
+
+Status Push(LinkStack *S, SElemType e)
+{
+	LinkList p = S->Head;
+	LinkList r;
+	r = (LinkList)malloc(sizeof(LNode));
+	if(!r) return ERROR;
+	r->data = e;
+	r->next = p->next;
+	p->next = r;
+	S->length ++;
+	return OK;
+
+}
+
+ 
+
+//======================================
+
+// Print the elements in a stack
+
+//=======================================
+
+void PrintStack (LinkStack S)
+{
+
+	LinkList p = S.Head->next;
+	while(p)
+	{
+		printf("%d ",p->data);
+		p = p->next;
+	 } 
+	 
+}
+
+//=========================
+
+// 计算分值，s为字符串数组，nSize为数组的长度
+
+//========================
+
+int CalPoints(char *s,  int nSize)
+
+{
+	LinkStack Sstack;
+	InitStack(&Sstack);
+	int count = 0,i = 0,e;
+	for(;i < nSize;i ++)
+	{
+		if(s[i] <= '9' && s[i] >= '0')	Push(&Sstack,s[i] - '0');
+		else if(s[i] == '+')	
+		{
+			LinkList p = Sstack.Head->next;
+			//while(p->next->next)	p = p->next;
+			Push(&Sstack,p->data + p->next->data);
+		}
+		else if(s[i] == 'D')	Push(&Sstack,2 * GetTop(Sstack));
+		else if(s[i] == 'C')	Pop(&Sstack,&e);
+	}
+	
+	LinkList q = Sstack.Head->next;
+	while(q)	
+	{
+		count +=q->data;
+		q = q->next; 
+	}
+	return count;
+
+} 
+
+
+
+int main()  
+
+{  
+	int n,i = 0;
+	char str[n + 1];
+	scanf("%d",&n);
+	for(;i < n;i ++)	
+	{
+		getchar(); 
+		scanf("%c",&str[i]);
+	}
+	str[n] = '\0';
+	printf("%s",str); 
+	printf("%d",CalPoints(str,n));
+	
+	return OK;
+
+ } 
+
+
+第8题
+#include <stdio.h>  
+
+#include <stdlib.h>  
+
+#include <malloc.h>
+
+ 
+
+#define ERROR 0
+
+#define OK 1
+
+#define TRUE 1
+
+#define FALSE 0
+
+typedef char SElemType;  
+
+typedef int Status;
+
+ 
+
+// definition of array based stack
+
+#define STACK_INIT_SIZE   100          //Initial size for memory allocation
+
+#define STACKINCREMENT  10          //incremental size
+
+typedef struct{
+
+   SElemType  *base;    //base pointer
+
+   SElemType  *top;      //top pointer
+
+   int        stacksize;     //current size
+
+}SqStack;
+
+ 
+
+//========================================== 
+
+// initialization of array-based stack
+
+//=========================================== 
+
+Status InitStack(SqStack *S)
+{
+
+	S->base = (char*)malloc(STACK_INIT_SIZE*sizeof(char));
+	if(!S->base)	return ERROR;
+	S->top = S->base;
+	S->stacksize =  STACK_INIT_SIZE;
+	return OK;
+}
+
+ 
+
+//========================================
+
+//Test empty stack
+
+//========================================
+
+Status StackEmpty (SqStack S)
+{
+
+	return (S.base == S.top)?TRUE:FALSE;
+
+}
+
+ 
+
+//===============================================
+
+// Get the length of a stack
+
+//==============================================
+
+int StackLength (SqStack S)
+{
+
+	return S.top - S.base;                            
+
+}
+
+ 
+
+//=====================================
+
+// Get top item of a stack
+
+//====================================
+
+Status GetTop(SqStack S, SElemType *e)
+{
+	if(StackEmpty(S))	return ERROR;
+	*e = *(S.top - 1);
+ 	return OK;
+
+}
+
+ 
+
+//===================================================
+
+// Delete an item from the stack
+
+//====================================================
+
+Status Pop(SqStack *S)
+{
+
+	if(StackEmpty(*S))	return ERROR;
+	--S->top; 
+	return OK;
+}
+
+ 
+
+//======================================
+
+// Insert an item into the stack
+
+//=======================================
+
+Status Push(SqStack *S,SElemType e)
+{
+
+	if(S->stacksize == StackLength(*S)) 
+	{
+		S->base = (char*)realloc(S->base,(S->stacksize + STACKINCREMENT) *sizeof(char));
+		if(!S->base)	return ERROR;
+		S->top = S->base + S->stacksize;
+		S->stacksize += STACKINCREMENT; 
+	 } 
+	 *S->top ++ = e;
+	return OK;
+}
+
+ 
+
+//======================================
+
+// Print the elements in a stack
+
+//=======================================
+
+void PrintStack (SqStack S)
+{
+	
+	SElemType *p = S.base;
+	while(p < S.top)
+	{
+		printf("%c",*p++);
+	}
+	printf("\n"); 
+}
+
+ 
+
+//======================================
+
+// 检查操作序列是否合法, 如果合法，返回1，否则返回0
+
+//=======================================
+
+int isLegal(char *s)
+
+{
+	SqStack T; 
+	InitStack(&T);
+	
+	int i = 0;
+	for(;s[i] != '\0';i ++)
+	{
+		if(s[i] == 'I')	Push(&T,s[i]);
+		else if(s[i] == 'O')	if(!Pop(&T)) return ERROR;
+	}
+	return StackEmpty(T);
+}
+
+
+
+int main( )  
+
+{  
+	char str[10010];
+	scanf("%s",str);
+	int tag = isLegal(str);
+	if(tag)	printf("True");
+	else printf("False");
+	return OK;
+
+
+ } 
+
+第九题
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <malloc.h>
+
+#define ERROR 0
+#define OK 1
+#define TRUE 1
+#define FALSE 0
+
+typedef int SElemType;  
+typedef int Status;
+
+typedef struct L_node {
+    SElemType data;  //data field
+    struct L_node *next;   //pointer field
+} LNode, *LinkList;
+
+typedef struct {
+    LinkList Head;  //head pointer
+    int length;  //length
+} LinkStack;
+
+//========================================== 
+// initialization of linked list based stack
+//=========================================== 
+Status InitStack(LinkStack *S)
+{
+   S->Head = (LinkList)malloc(sizeof(LNode));
+   if(!S->Head)	return ERROR;
+   S->Head->next = NULL;
+   S->length = 0;
+   return OK; 
+}
+
+//========================================
+// Test empty stack
+//========================================
+Status StackEmpty(LinkStack S)
+{
+	return (!S.length);
+}
+
+//===============================================
+// Get the length of a stack
+//==============================================
+int StackLength(LinkStack S)
+{
+	return S.length;
+}
+
+//=====================================
+// Get top item of a stack
+//====================================
+Status GetTop(LinkStack S, SElemType *e)
+{
+	if(StackEmpty(S))	return ERROR;
+	*e = S.Head->next->data;
+}
+
+//===================================================
+// Delete an item from the stack
+//====================================================
+Status Pop(LinkStack *S, SElemType *e)
+{
+	if(StackEmpty(*S))	return ERROR;
+	LinkList p = S->Head;
+	LinkList r = p->next;
+	p->next = r->next;
+	*e = r->data;
+	free(r);
+	S->length --;
+	return OK;
+}
+
+//======================================
+// Insert an item into the stack
+//=======================================
+Status Push(LinkStack *S, SElemType e)
+{
+	LinkList p = S->Head;
+	LinkList r;
+	r = (LinkList)malloc(sizeof(LNode));
+	r->data = e;
+	r->next = p->next;
+	p->next = r;
+	S->length ++;
+	return OK;
+}
+
+//======================================
+// Print the elements in a stack
+//=======================================
+void PrintStack(LinkStack S)
+{
+	LinkList p = S.Head->next;
+	while(p)
+	{
+		printf("%d ",p->data);
+		p = p->next;
+	 } 
+	 printf("\n");
+}
+
+//======================================
+// 删除堆栈中值为x的元素（可能有多个），返回堆栈的长度
+//=======================================
+int DeleteElem(LinkStack *S, SElemType x)
+{
+	LinkList p = S->Head;
+	while(p->next)
+	{
+		if(p->next->data != x)	p = p->next;
+		else
+		{
+			LinkList r = p->next;
+			p->next = r->next;
+			free(r);
+			 S->length --;
+		  }  
+	}
+	return S->length;
+}
+
+int main()  
+{  
+	LinkStack S;
+	InitStack(&S);
+	int n,i = 0;
+	scanf("%d",&n);
+	int arr[n];
+	for(;i < n;i ++)	
+	{
+		scanf("%d",&arr[i]);
+		Push(&S,arr[i]);
+	}
+	int x;
+	scanf("%d",&x);
+	
+	int tag = DeleteElem(&S,x);
+	PrintStack(S);
+	printf("%d",tag);
+}
+
+
+
