@@ -46,33 +46,32 @@ Status InitList(LinkList *L)
 
 
 
-int int_mult(LinkList *L, int base) 
-{
-	
-	int carry = 0;
-	LNode *p = (*L);
-	LNode *pre = NULL;
-	
-	while(p)
-	{
-		p->data = p->data * base + carry;
-		carry = p->data / 10;
-		p->data = p->data % 10;
-		pre = p;
-		p = p->next;
-	}
-	
-	if(!p && carry)
-	{
-		p = (LinkList)malloc(sizeof(LNode));
-		if(!p)	return ERROR;
-		p->data = carry;
-		p->next = NULL;
-		pre->next = p;
-	}
-	return OK;
-
-}
+//int int_mult(LinkList *L, int base) 
+//{
+//	
+//	int carry = 0;
+//	LNode *p = (*L);
+//	LNode *pre = NULL;
+//	
+//	while(p)
+//	{
+//		p->data = p->data * base + carry;
+//		carry = p->data / 10;
+//		p->data = p->data % 10;
+//		pre = p;
+//		p = p->next;
+//	}
+//	
+//	if(!p && carry)
+//	{
+//		p = (LinkList)malloc(sizeof(LNode));
+//		if(!p)	return ERROR;
+//		p->data = carry;
+//		p->next = NULL;
+//		pre->next = p;
+//	}
+//	return OK;
+//}
 
 
 

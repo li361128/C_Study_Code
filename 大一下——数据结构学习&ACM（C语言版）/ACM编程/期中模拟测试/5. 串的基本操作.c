@@ -75,18 +75,16 @@ int MyStrInsert(SString T, int pos, SString sub)
 {
 
        //学生补充完整
-       int i = 0;
-       for(i = 0;i < T[0] - pos + 1;i ++)
-       {
-       		T[T[0] + sub[0] - i] = T[T[0] - i];
-	   }
-       for(i = 0;i < sub[0];i ++)
-       {
-       		T[pos + i + 1] = sub[i + 1];
-	   }
-	   T[0] += sub[0];
-	   T[T[0] + sub[0] + 1] = '\0';
-	   return 1;
+		 int i = T[0];
+		 for(;i >= pos;i --)
+		 {
+		 	T[sub[0] + i] = T[i];
+		  } 
+		  for(i = 1;i <= sub[0];i ++)
+		  {
+		  	T[pos + i] = sub[i];
+		  }
+		  return 1;
 
 }
 
@@ -177,7 +175,6 @@ int StrCompare(SString T,SString S)
        		if(T[i] != S[i])	return T[i] - S[i];
 	   }
 	   return T[0] - S[0];
-
 }
 
 int main()
