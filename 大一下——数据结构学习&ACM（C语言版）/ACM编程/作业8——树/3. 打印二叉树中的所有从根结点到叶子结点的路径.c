@@ -96,13 +96,15 @@ void printAllPaths(BiTree T, char *path, int pathlen)
 int main()
 
 {
-	char arr[1000],len = 0;
-	while(scanf("%c",&arr[len]) != EOF)
-	{
-		if(arr[len] == '\n') // 若输入换行符，则结束循环
+	char arr[1000],ch;
+	int len = 0;
+    
+    while((ch = getchar()) != EOF)
+    {
+        if(ch == '\n') // 若输入换行符，则结束循环
             break;
-        len ++;      
-	}
+        arr[len++] = ch;
+    }
 	
 	BiTree T = NULL;
 	CreateBiTree1(&T,arr,len);

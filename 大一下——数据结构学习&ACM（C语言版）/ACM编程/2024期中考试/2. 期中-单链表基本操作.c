@@ -1,4 +1,7 @@
- #include <stdio.h>
+//第一问代码有瑕疵， 扣1分
+//第二问逻辑轻度复杂， 扣1分
+//第三问效率低， 扣1分
+#include <stdio.h>
 
 #include "stdio.h"
 
@@ -108,7 +111,6 @@ void ListPrint(LinkList L)
 
 }
 
- 
 
 int ListLength(LinkList L)
 
@@ -116,7 +118,7 @@ int ListLength(LinkList L)
 
        //★★★请补全代码
        LNode *p = L->next;
-       int count = 0;
+       int count = 0;	//count 作计数器
 	   while(p)
 	   {
 	   		count ++;
@@ -126,75 +128,85 @@ int ListLength(LinkList L)
 
 }
 
- 
 
- 
 
 void MoveMin(LinkList *L)
 
 {
 
 //★★★请补全代码
-	int min = (*L)->next->data;
+	//在遍历链表寻找最小值时就维护好最小值所在结点及其前驱 
+	// 如此便不需要记录最小值data， 不需要后续再遍历一次 
+	LNode *min_p = (*L)->next;
+	LNode *min_pre = (*L);//记录最小值所在节点的前驱结点，以便删除操作
+	LNode *pre = (*L);
 	LNode *p = (*L)->next;
 	while(p)
 	{
-		if(p->data < min)
+		if(p->data < min_p->data)
 		{
-			min = p->data;
+			min_pre = pre;//找到链表的最小值
+			min_p = p;
 		}
+		pre = p;
 		p = p->next;
 	}
 	
-	LNode *min_p = (*L)->next;
-	LNode *min_pre = (*L);
-	LNode *r = (*L);
-	int i = 0;
-	for(;i < ListLength(*L);i ++)
+	if(min_p != (*L)->next)
 	{
-		if(min_p->data != min)
-		{
-			min_pre = min_pre->next;
-			min_p = min_p->next;
-		}
-		else if(min_p->data == min)
-		{
-			min_pre->next = min_p->next;
-			min_p->next =  r->next;
-			r->next = min_p;
-			return ;
-		}
+		min_pre->next = min_p->next;
+		min_p->next = (*L)->next;
+		(*L)->next = min_p; 
 	}
+	
+	
+//	int i = 0;
+//	for(;i < ListLength(*L);i ++)
+//	{
+//        if(min_p->data == min)
+//		{//检索最小值所在节点，并进行移动
+//			min_pre->next = min_p->next;//去除原链表中最小值所在节点
+//			min_p->next =  r->next;//将最小值结点插入到首元结点
+//			r->next = min_p;
+//			return ;
+//		}
+//        min_pre = min_pre->next;
+//		min_p = min_p->next;
+//	}
+
 }
-
- 
-
- 
 
 int SumToNewlist(LinkList *L)
 
 {
 
 //★★★请补全代码
-	int sum = 0,i = 1;
+	int sum = 0;
 	LNode *p = (*L)->next;
+    LNode *tail = NULL;
 	while(p)
 	{
-		sum += p->data;
+		sum += p->data;//求和
+        if (p->next == NULL) {
+            tail = p; // Keep track of the last node
+        }
 		p = p->next;
 	}
+    //创建sum节点
 	LNode *r ;
 	r = (LNode*)malloc(sizeof(LNode));
 	r->data = sum;
 	r->next = NULL;
-	LNode *q = (*L);
-	while(q->next)
-	{
-		q = q->next;
-	}
-	q->next = r;
+    
+    //插到尾节点
+//	LNode *q = (*L);
+//	while(q->next)
+//	{
+//		q = q->next;
+//	}
+	tail->next = r;
+    
 	return 1;
-
 }
 
  
@@ -234,5 +246,3 @@ int main()
        return 0;
 
 }
-
-

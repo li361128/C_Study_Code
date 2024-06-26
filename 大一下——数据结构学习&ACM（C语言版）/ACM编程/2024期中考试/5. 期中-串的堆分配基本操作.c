@@ -1,3 +1,5 @@
+//串赋值函数未正确分配正确空间， 扣2分
+//插入函数释放后未分配空间， 扣2分
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -35,7 +37,11 @@ Status StrAssign(HString *T,char *chars){
 
 //*************补全代码*************
 	int i = 0;
-	T->ch = (char*)malloc(100 *sizeof(char));
+//	T->ch = (char*)malloc(100 *sizeof(char));
+    int len = 0;
+	for(; chars[len] != '\0'; len ++){}
+		 
+	T->ch = (char*)malloc(len *sizeof(char));
 	for(;chars[i] != '\0';i ++)
 	{
 		(*T).ch[i] = chars[i];
@@ -43,8 +49,6 @@ Status StrAssign(HString *T,char *chars){
 	(*T).length = i;
 	return OK;
 
-	
-	
 }//StrAssign    
 
 
@@ -71,17 +75,18 @@ Status StrInsert(HString *S,int pos,HString T){
 
  //*********补全代码***********
  	int i = 0;
- 	if(pos > S->length + 1)		return ERROR;
+ 	if(pos > S->length + 1 || pos < 1)		return ERROR;
  	
  	for(i = S->length;i >= pos;i --)
- 	{
+ 	{//将S->ch中第pos位及以后的总计S->length - pos + 1个字符往后移T->length个长度
  		S->ch[i + T.length - 1] = S->ch[i - 1];
 	}
 	for(i = 0;i < T.length ;i ++)
-	{
+	{//将S->ch中第pos位及以后总计T->length个字符replace成T->ch中的字符
 		S->ch[i + pos - 1] = T.ch[i];
 	}
-	S->length += T.length; 
+	S->length += T.length; //更新S->length
+    S->ch[S->length] = '\0';  // 确保字符串以NULL结尾
 	return OK;
 
 	
@@ -135,3 +140,4 @@ int main()
 	ClearString(&S3);
 	return 0;
 }
+

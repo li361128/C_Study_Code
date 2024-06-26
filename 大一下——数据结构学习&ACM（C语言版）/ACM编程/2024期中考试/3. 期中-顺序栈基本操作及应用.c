@@ -98,8 +98,7 @@ char GetTop(SqStack S, ElemType *e)
 	return *e;
  
 
-        
-
+    
 }
 
  
@@ -108,7 +107,7 @@ int main()
 
 {
 
-         char a[20], b[20];
+         char a[21], b[21];// 增加1以适应gets函数的'\0'结尾
 
          char temp;
 
